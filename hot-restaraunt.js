@@ -16,31 +16,49 @@ var tables = [
     }
 ];
 
-//routes
+
+var waitTables = [
+    {
+        customerName: "",
+        email: "",
+        phoneNumber: "",
+        id: ""
+    }
+];
+
+
+// //routes
 app.get("/", function(req, res) {
-    res.sendFile(path.join(_dirname, "add.html"));
+    res.sendFile(path.join(_dirname, "index.html"));
 });
 
 app.get("/add", function(req, res) {
     res.sendFile(path.join(_dirname, "add.html"));
 });
 
+app.get("/tables", function(req, res) {
+    res.sendFile(path.join(_dirname, "tables.html"));
+});
+//displays currently seated tables
 app.get("/api/tables", function(req, res) {
     return res.json(tables);
 });
-
-//displays tables
-app.get("/api/tables/:tables", function(req, res) {
-    const 
+// //displays wait list
+app.get("/api/waitTables", function(req, res) {
+    return res.json(waitTables);
 });
 
+// // adding/pushing tables
 app.post("/api/tables", function (req, res) {
     const newTable = req.body;
-
-    newTable.routeName = newTable.name.replace(/\s+/g, "").toLowerCase();
-    console.log(newTable);
-    tables.push(newTable);
-    res.json(newTable);
+    if (tables.length < 5) {
+        tables.push(newTable);
+        return res.send("reserved");
+    } else {
+        waitTables.push(newTable); 
+        return res.send("wait");
+    }
+    
 });
 
 app.listen(PORT, function() {
